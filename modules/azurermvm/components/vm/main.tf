@@ -5,6 +5,7 @@ resource "azurerm_virtual_machine" "vm" {
   resource_group_name   = "${var.azurerm_resource_group_name}"
   network_interface_ids = ["${var.azurerm_network_interface_id}"]
   vm_size               = "${var.azurerm_virtual_machine_vm_size}"
+  availability_set_id   = "${var.azurerm_availability_set_id}"
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
   storage_image_reference {
@@ -35,6 +36,6 @@ resource "azurerm_virtual_machine" "vm" {
     disable_password_authentication = false
   }
   tags {
-    environment = "staging"
+    environment = "Production"
   }
 }

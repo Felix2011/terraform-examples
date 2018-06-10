@@ -6,6 +6,7 @@ module "nic" {
   azurerm_resource_group_name                     = "${var.azurerm_resource_group_name}"
   azurerm_resource_group_location                 = "${var.azurerm_resource_group_location}"
   azurerm_network_interface_name                  = "${var.azurerm_network_interface_name}"
+  azurerm_load_balancer_backend_address_pools_ids = ["${var.azurerm_load_balancer_backend_address_pools_ids}"]
 }
 
 module "datadisk" {
@@ -20,6 +21,7 @@ module "vm" {
   source     = "./components/vm"
   azurerm_resource_group_name             = "${var.azurerm_resource_group_name}"
   azurerm_resource_group_location         = "${var.azurerm_resource_group_location}"
+  azurerm_availability_set_id             = "${var.azurerm_availability_set_id}"
   azurerm_network_interface_id            = "${module.nic.nic_id}"
   azurerm_network_interface_name          = "${var.azurerm_network_interface_name}"
   azurerm_managed_disk_size               = "${var.azurerm_managed_disk_size}"

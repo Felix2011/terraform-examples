@@ -23,3 +23,5 @@ variable "azurerm_virtual_machine_image_sku" {}
 variable "azurerm_virtual_machine_image_version" {}
 
 variable "azurerm_virtual_machine_vm_size" {}
+
+variable "azurerm_availability_set_id" {}
