@@ -23,6 +23,8 @@ resource "azurerm_lb_rule" "rule" {
   frontend_port                  = "${var.azurerm_lb_fe_port}"
   backend_port                   = "${var.azurerm_lb_be_port}"
   frontend_ip_configuration_name = "${var.azurerm_lb_name}FEIP"
+  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.BEPool.id}"
+  probe_id                       = "${azurerm_lb_probe.test.id}"
 }
 
 resource "azurerm_lb_probe" "test" {
