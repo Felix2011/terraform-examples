@@ -72,10 +72,12 @@ module "weblb" {
   azurerm_resource_group_name     = "${data.azurerm_resource_group.network.name}"
   azurerm_resource_group_location = "${data.azurerm_resource_group.network.location}"
   azurerm_lb_name                 = "web"
+  azurerm_lb_fe_port              = "80"
+  azurerm_lb_be_port              = "80"
 }
 
 module "webvm01" {
-  source     = "../../modules/azurermvm"
+  source     = "../../modules/azurerm_vm_coreos"
   azurerm_network_interface_ip_configuration_name = "webvm01nic01configuration"
   azurerm_subnet_id                               = "${data.azurerm_subnet.web.id}"
   azurerm_resource_group_name                     = "${data.azurerm_resource_group.network.name}"
@@ -94,7 +96,7 @@ module "webvm01" {
 }
 
 module "webvm02" {
-  source     = "../../modules/azurermvm"
+  source     = "../../modules/azurerm_vm_coreos"
   azurerm_network_interface_ip_configuration_name = "webvm02nic01configuration"
   azurerm_subnet_id                               = "${data.azurerm_subnet.web.id}"
   azurerm_resource_group_name                     = "${data.azurerm_resource_group.network.name}"
@@ -118,10 +120,12 @@ module "applb" {
   azurerm_resource_group_name     = "${data.azurerm_resource_group.network.name}"
   azurerm_resource_group_location = "${data.azurerm_resource_group.network.location}"
   azurerm_lb_name                 = "app"
+  azurerm_lb_fe_port              = "80"
+  azurerm_lb_be_port              = "80"
 }
 
 module "appvm01" {
-  source     = "../../modules/azurermvm"
+  source     = "../../modules/azurerm_vm_coreos"
   azurerm_network_interface_ip_configuration_name = "vm01nic01configuration"
   azurerm_subnet_id                               = "${data.azurerm_subnet.app.id}"
   azurerm_resource_group_name                     = "${data.azurerm_resource_group.network.name}"

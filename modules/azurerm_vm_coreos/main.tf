@@ -1,6 +1,6 @@
 
 module "nic" {
-  source  = "./components/nic"
+  source  = "../azurerm_nic"
   azurerm_network_interface_ip_configuration_name = "${var.azurerm_network_interface_ip_configuration_name}"
   azurerm_subnet_id                               = "${var.azurerm_subnet_id}"
   azurerm_resource_group_name                     = "${var.azurerm_resource_group_name}"
@@ -10,7 +10,7 @@ module "nic" {
 }
 
 module "datadisk" {
-  source  = "./components/datadisk"
+  source  = "../azurerm_datadisk"
   azurerm_managed_disk_name       = "${var.azurerm_managed_disk_name}"
   azurerm_resource_group_name     = "${var.azurerm_resource_group_name}"
   azurerm_resource_group_location = "${var.azurerm_resource_group_location}"

@@ -14,3 +14,20 @@ resource "azurerm_lb_backend_address_pool" "BEPool" {
   loadbalancer_id     = "${azurerm_lb.lb.id}"
   name                = "${var.azurerm_lb_name}BEAddressPool"
 }
+
+resource "azurerm_lb_rule" "rule" {
+  resource_group_name            = "${var.azurerm_resource_group_name}"
+  loadbalancer_id                = "${azurerm_lb.lb.id}"
+  name                           = "${var.azurerm_lb_name}LBRule"
+  protocol                       = "Tcp"
+  frontend_port                  = "${var.azurerm_lb_fe_port}"
+  backend_port                   = "${var.azurerm_lb_be_port}"
+  frontend_ip_configuration_name = "${var.azurerm_lb_name}BEAddressPool"
+}
+
+resource "azurerm_lb_probe" "test" {
+  resource_group_name = "${var.azurerm_resource_group_name}"
+  loadbalancer_id     = "${azurerm_lb.lb.id}"
+  name                = "${var.azurerm_lb_name}-running-probe"
+  port                = "${var.azurerm_lb_be_port}"
+}
