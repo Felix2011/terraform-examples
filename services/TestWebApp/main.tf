@@ -67,44 +67,11 @@ resource "azurerm_availability_set" "appavs" {
   }
 }
 
-resource "azurerm_public_ip" "webpublicip" {
-  name                         = "WebLBPublicIP"
-  location                     = "${data.azurerm_resource_group.network.location}"
-  resource_group_name          = "${data.azurerm_resource_group.network.name}"
-  public_ip_address_allocation = "static"
-}
-
-resource "azurerm_lb" "weblb" {
-  name                = "WebLB"
-  location            = "${data.azurerm_resource_group.network.location}"
-  resource_group_name = "${data.azurerm_resource_group.network.name}"
-  frontend_ip_configuration {
-    name                 = "WebFEPublicIP"
-    public_ip_address_id = "${azurerm_public_ip.webpublicip.id}"
-  }
-}
-
-resource "azurerm_lb_backend_address_pool" "WebBEPool" {
-  resource_group_name = "${data.azurerm_resource_group.network.name}"
-  loadbalancer_id     = "${azurerm_lb.weblb.id}"
-  name                = "WebBEAddressPool"
-}
-
-resource "azurerm_lb" "applb" {
-  name                = "AppLB"
-  location            = "${data.azurerm_resource_group.network.location}"
-  resource_group_name = "${data.azurerm_resource_group.network.name}"
-  frontend_ip_configuration {
-    name                          = "AppFEPublicIP"
-    subnet_id                     = "${data.azurerm_subnet.app.id}"
-    private_ip_address_allocation = "dynamic"
-  }
-}
-
-resource "azurerm_lb_backend_address_pool" "AppBEPool" {
-  resource_group_name = "${data.azurerm_resource_group.network.name}"
-  loadbalancer_id     = "${azurerm_lb.applb.id}"
-  name                = "AppBEAddressPool"
+module "weblb" {
+  source     = "../../modules/azurerm_lbfe"
+  azurerm_resource_group_name     = "${data.azurerm_resource_group.network.name}"
+  azurerm_resource_group_location = "${data.azurerm_resource_group.network.location}"
+  azurerm_lb_name                 = "web"
 }
 
 module "webvm01" {
@@ -115,7 +82,7 @@ module "webvm01" {
   azurerm_resource_group_location                 = "${data.azurerm_resource_group.network.location}"
   azurerm_availability_set_id                     = "${azurerm_availability_set.webavs.id}"
   azurerm_network_interface_name                  = "webvm01nic01"
-  azurerm_load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.WebBEPool.id}"]
+  azurerm_load_balancer_backend_address_pools_ids = ["${module.weblb.BEPool_id}"]
   azurerm_managed_disk_size                       = "1023"
   azurerm_managed_disk_name                       = "webvm01datadisk01"
   azurerm_virtual_machine_name                    = "webvm01"
@@ -134,7 +101,7 @@ module "webvm02" {
   azurerm_resource_group_location                 = "${data.azurerm_resource_group.network.location}"
   azurerm_availability_set_id                     = "${azurerm_availability_set.webavs.id}"
   azurerm_network_interface_name                  = "webvm02nic01"
-  azurerm_load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.WebBEPool.id}"]
+  azurerm_load_balancer_backend_address_pools_ids = ["${module.weblb.BEPool_id}"]
   azurerm_managed_disk_size                       = "1023"
   azurerm_managed_disk_name                       = "webvm02datadisk01"
   azurerm_virtual_machine_name                    = "webvm02"
@@ -145,6 +112,14 @@ module "webvm02" {
   azurerm_virtual_machine_image_version           = "latest"
 }
 
+module "applb" {
+  source     = "../../modules/azurerm_lbbe"
+  azurerm_subnet_id               = "${data.azurerm_subnet.app.id}"
+  azurerm_resource_group_name     = "${data.azurerm_resource_group.network.name}"
+  azurerm_resource_group_location = "${data.azurerm_resource_group.network.location}"
+  azurerm_lb_name                 = "app"
+}
+
 module "appvm01" {
   source     = "../../modules/azurermvm"
   azurerm_network_interface_ip_configuration_name = "vm01nic01configuration"
@@ -153,7 +128,7 @@ module "appvm01" {
   azurerm_resource_group_location                 = "${data.azurerm_resource_group.network.location}"
   azurerm_availability_set_id                     = "${azurerm_availability_set.appavs.id}"
   azurerm_network_interface_name                  = "appvm01nic01"
-  azurerm_load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.AppBEPool.id}"]
+  azurerm_load_balancer_backend_address_pools_ids = ["${module.applb.BEPool_id}"]
   azurerm_managed_disk_size                       = "1023"
   azurerm_managed_disk_name                       = "appvm01datadisk01"
   azurerm_virtual_machine_name                    = "appvm01"
