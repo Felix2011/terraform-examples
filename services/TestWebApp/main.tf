@@ -67,6 +67,11 @@ resource "azurerm_availability_set" "appavs" {
   }
 }
 
+module "data_httpd" {
+  source = "../../modules/ignition_coreos_httpd"
+  op_key = "${var.PUB_KEY}"
+}
+
 module "weblb" {
   source     = "../../modules/azurerm_lbfe"
   azurerm_resource_group_name     = "${data.azurerm_resource_group.network.name}"
@@ -93,6 +98,7 @@ module "webvm01" {
   azurerm_virtual_machine_image_offer             = "CoreOS"
   azurerm_virtual_machine_image_sku               = "Stable"
   azurerm_virtual_machine_image_version           = "latest"
+  azurerm_custom_data                             = "${base64encode(module.data_httpd.httpd-ignition)}"
 }
 
 module "webvm02" {
@@ -112,6 +118,7 @@ module "webvm02" {
   azurerm_virtual_machine_image_offer             = "CoreOS"
   azurerm_virtual_machine_image_sku               = "Stable"
   azurerm_virtual_machine_image_version           = "latest"
+  azurerm_custom_data                             = "${base64encode(module.data_httpd.httpd-ignition)}"
 }
 
 module "applb" {
@@ -141,4 +148,9 @@ module "appvm01" {
   azurerm_virtual_machine_image_offer             = "CoreOS"
   azurerm_virtual_machine_image_sku               = "Stable"
   azurerm_virtual_machine_image_version           = "latest"
+  azurerm_custom_data                             = "${base64encode(module.data_httpd.httpd-ignition)}"
+}
+
+output "httpd-ignition" {
+  value = "${module.data_httpd.httpd-ignition}"
 }

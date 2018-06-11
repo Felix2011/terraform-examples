@@ -31,6 +31,7 @@ resource "azurerm_virtual_machine" "vm" {
     computer_name  = "hostname"
     admin_username = "testadmin"
     admin_password = "Password1234!"
+    custom_data    = "${var.azurerm_custom_data}"
   }
   os_profile_linux_config {
     disable_password_authentication = false

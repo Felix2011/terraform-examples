@@ -33,4 +33,5 @@ module "vm" {
   azurerm_virtual_machine_image_sku       = "${var.azurerm_virtual_machine_image_sku}"
   azurerm_virtual_machine_image_version   = "${var.azurerm_virtual_machine_image_version}"
   azurerm_virtual_machine_vm_size         = "${var.azurerm_virtual_machine_vm_size}"
+  azurerm_custom_data                     = "${var.azurerm_custom_data}"
 }

@@ -5,3 +5,5 @@ variable "AzureSubID" {
 variable "AzureTennantID" {
    default = "f4f6dcd1-23d7-4ff4-bc6c-150f1b5db3cc"
 }
+
+variable "PUB_KEY" {}

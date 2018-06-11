@@ -22,7 +22,7 @@ resource "azurerm_lb_rule" "rule" {
   protocol                       = "Tcp"
   frontend_port                  = "${var.azurerm_lb_fe_port}"
   backend_port                   = "${var.azurerm_lb_be_port}"
-  frontend_ip_configuration_name = "${var.azurerm_lb_name}BEAddressPool"
+  frontend_ip_configuration_name = "${var.azurerm_lb_name}FEIP"
 }
 
 resource "azurerm_lb_probe" "test" {
