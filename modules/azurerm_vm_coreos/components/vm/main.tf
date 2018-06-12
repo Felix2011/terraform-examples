@@ -28,7 +28,7 @@ resource "azurerm_virtual_machine" "vm" {
     disk_size_gb    = "${var.azurerm_managed_disk_size}"
   }
   os_profile {
-    computer_name  = "hostname"
+    computer_name  = "${var.azurerm_virtual_machine_name}"
     admin_username = "testadmin"
     admin_password = "Password1234!"
     custom_data    = "${var.azurerm_custom_data}"

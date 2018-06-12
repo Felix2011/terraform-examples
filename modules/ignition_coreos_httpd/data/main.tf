@@ -9,14 +9,20 @@ data "ignition_user" "core" {
 #files start#
 #############
 
-#data "ignition_file" "hostname" {
-#    filesystem = "root"
-#    path       = "/etc/hostname"
-#    mode       = "420"
-#    content {
-#        content = "${var.name}"
-#    }
-#}
+data "template_file" "index_html" {
+  template = "${file("${path.module}/index_html.tpl")}"
+  vars {
+  }
+}
+
+data "ignition_file" "index_html" {
+    filesystem = "root"
+    path       = "/var/docker/htdocs/index.html"
+    mode       = "420"
+    content {
+        content = "${data.template_file.index_html.rendered}"
+    }
+}
 
 ###############
 #systemd start#
@@ -36,9 +42,9 @@ data "ignition_config" "httpd" {
   users = [
     "${data.ignition_user.core.id}",
   ]
-#  files = [
-#    "${data.ignition_file.hostname.id}",
-#  ]
+  files = [
+    "${data.ignition_file.index_html.id}",
+  ]
   systemd = [
     "${data.ignition_systemd_unit.httpd.id}",
   ]
