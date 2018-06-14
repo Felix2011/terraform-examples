@@ -17,4 +17,5 @@
 #  azurerm_virtual_machine_image_offer             = "CoreOS"
 #  azurerm_virtual_machine_image_sku               = "Stable"
 #  azurerm_virtual_machine_image_version           = "latest"
+#  azurerm_custom_data                             = "${base64encode(module.data_httpd.httpd-ignition)}"
 #}
