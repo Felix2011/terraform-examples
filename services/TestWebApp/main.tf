@@ -154,3 +154,7 @@ module "appvm01" {
 output "httpd-ignition" {
   value = "${module.data_httpd.httpd-ignition}"
 }
+
+output "web_public_ip" {
+  value = "${module.weblb.public_ip}"
+}
